@@ -7,6 +7,10 @@ html(lang="en")
   body
     .container
       h1  #{ title }
-      p Name: #{ user.name }
-      p Age: #{ user.age }
-      a(href="/users") Back to users list
+
+      ul 
+        each user in users
+          li 
+            a(href='/users/:userId') Name:  #{ user.name } | Age: #{ user.age }
+      
+      a(href="/") Back to main page

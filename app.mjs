@@ -1,49 +1,55 @@
 import express from 'express'
+import { renderFile as ejsRenderFile } from 'ejs'
+import { renderFile as pugRenderFile } from 'pug'
+import articles from './data/articles.mjs'
+import users from './data/users.mjs'
 
 const app = express()
+const PORT = 3000
 
 app.set('view engine', 'pug')
 app.set('views', './views')
 
 app.get('/', (req, res) => {
-  const items = [
-    { name: 'Apple', price: 1.99 },
-    { name: 'Banana', price: 0.99 },
-    { name: 'Cherry', price: 2.99 },
-    { name: 'Date', price: 3.99 },
-    { name: 'Elderberry', price: 4.99 },
-    { name: 'Fig', price: 5.99 }
-  ]
+  res.render('index')
+})
 
-  const user = { name: 'John', age: 30 }
-  const title = 'Fruits'
+app.get('/users', (req, res) => {
+  const title = 'Users list'
+  res.render('users', { users, title })
+})
 
-  res.render('index', { items, user, title })
+app.get('/users/:id', (req, res) => {
+  users.forEach(user => {
+    pugRenderFile('./views/user.pug', {user}, (err, html) => {
+      if (err) {
+        return res.status(500).send('Помилка при обробці шаблону EJS')
+      }
+      res.send(html)
+    })
+  })
 })
 
 app.get('/articles', (req, res) => {
-
-  app.set('view engine', 'ejs')
-  app.set('views', './views/articles')
-
-  const articles = [
-    { 
-      title: 'Apple', 
-      body: "Одна з найбільших міжнародних організацій здійснює діяльність у наступних сферах: інформаційні технології, кімнатні й садові рослини та кредити для малого та середнього бізнесу. У своїй діяльності компанія використовує захоплюючі сучасні засоби зберігання даних, глобального громадянства та продуктів харчування. Наша мета проста: це забезпечення вам новаторства, відкриттів та бізнесу. Упевнене вдосконалення, модернізація топ-менеджерів, розробка оптимальних підходів і технологій та робітнича вправність забезпечили організації визнання і провідну роль на ринку України." 
-    },
-    { 
-      title: 'Apple', 
-      body: "Завдяки технологічним та довершеним продуктам та послугам, талановитим співробітникам і серйозному ставленню до накопичення та безпрограшних домовленостей, а також співпраці з іноземними компаніями та клієнтами, підприємство відкриває перед світом нові до найменших дрібниць прораховані рішення." 
-    },
-    { 
-      title: 'Apple', 
-      body: "Ми впевнені, що впровадження інновацій (фінансово відповідальні ціни) життєво необхідне для розвитку, тому ми постійно працюємо над поліпшенням та разом з тим, відкриті до неперервної інтеграції. Хочемо вражати домашніх улюбленців якістю накопичення і прагнемо розвивати кабельне телебачення, пасажирські перевезення і послуги доставки кореспонденції разом із рейтинговими агентствами. Незмінно пропонується широкий вибір безпрограшних домовленостей: розробка програмного забезпечення, підприємницька діяльність і мобільний голосовий зв'язок для киян і гостей столиці. Завдяки інноваційним та прогресивним продуктам та послугам, талановитим працівникам і серйозному ставленню до зберігання даних та глобального громадянства, а також кооперації з нашими партнерами та акціонерами, товариство відкриває перед світом нові оригінальні рішення. Одна з ведучих глобальних компаній здійснює діяльність за наступними напрямками: телекомунікації, свіжі овочі та фрукти та інформаційні технології. " 
+  ejsRenderFile('./views/articles/index.ejs', {articles}, (err, html) => {
+    if (err) {
+      return res.status(500).send('Помилка при обробці шаблону EJS')
     }
-  ]
-
-  res.render('index', { articles })
+    res.send(html)
+  })
 })
 
-app.listen(3000, () => {
+app.get('/articles/:id', (req, res) => {
+  articles.forEach((article) => {
+    ejsRenderFile('./views/articles/article.ejs', {article}, (err, html) => {
+      if (err) {
+        return res.status(500).send('Помилка при обробці шаблону EJS')
+      }
+      res.send(html)
+    })
+  })
+})
+
+app.listen(PORT, () => {
   console.log('Server is running on http://localhost:3000')
 })
