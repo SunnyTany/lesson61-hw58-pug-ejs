@@ -19,7 +19,7 @@ app.get('/users', (req, res) => {
   res.render('users', { users, title })
 })
 
-app.get('/users/:id', (req, res) => {
+app.get('/users/:userId', (req, res) => {
   users.forEach(user => {
     pugRenderFile('./views/user.pug', {user}, (err, html) => {
       if (err) {
@@ -39,7 +39,7 @@ app.get('/articles', (req, res) => {
   })
 })
 
-app.get('/articles/:id', (req, res) => {
+app.get('/articles/:articleId', (req, res) => {
   articles.forEach((article) => {
     ejsRenderFile('./views/articles/article.ejs', {article}, (err, html) => {
       if (err) {
